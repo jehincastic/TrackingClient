@@ -57,4 +57,32 @@ export default makeStyles((theme: Theme) => createStyles({
     }),
     marginLeft: 0,
   },
+  tileNav: {
+    fontSize: '1.01rem',
+    fontWeight: 500,
+  },
+  sectionDesktop: {
+    display: 'flex',
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  notificationHeading: {
+    padding: theme.spacing(1),
+    paddingBottom: theme.spacing(0),
+    paddingTop: theme.spacing(1.5),
+    fontSize: '1 rem',
+  },
+  notificationContent: {
+    fontSize: '0.85 rem',
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(0.5),
+    paddingBottom: theme.spacing(0),
+    width: '320px',
+  },
+  notificationDate: {
+    padding: theme.spacing(1),
+    paddingBottom: theme.spacing(1.5),
+    fontSize: '0.5 rem',
+  },
 }));
