@@ -21,45 +21,76 @@ import MailIcon from '@material-ui/icons/Mail';
 import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Popover from '@material-ui/core/Popover';
-import Card from '@material-ui/core/Card';
 
 import useStyles from './styles';
-import { PropType } from '../../Types';
+import {
+  PropType, PopOverType, PopOverList, MenuType,
+} from '../../Types';
+import PopOver from '../PopOver';
 
 const NavBar: React.FC = (props: React.Props<PropType>) => {
-  const [profileMenu, setProfileMenu] = useState<string[]>([]);
-  const [mainMenu, setMainMenu] = useState<string[]>([]);
+  const [profileMenu, setProfileMenu] = useState<MenuType[]>([]);
+  const [mainMenu, setMainMenu] = useState<MenuType[]>([]);
   const classes = useStyles();
   const theme = useTheme();
   const { children } = props;
-  const noNotification = 2;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const openPopOver = Boolean(anchorEl);
-  const popOverId = openPopOver ? 'simple-popover' : undefined;
-  const notificationList = [
+  const popOverId = openPopOver ? 'simple-popover' : '';
+  const [notificationList, setNotificationList] = React.useState<PopOverList[]>([
     {
       title: 'Sketch',
       content: 'Introducing Material-UI for Sketch. Today, we’re excited to introduce the Sketch symbols 💎 for Material-UI.',
-      date: new Date(1589053235710).toLocaleDateString('EN', { year: 'numeric', month: 'long', day: 'numeric' }),
+      date: 1589053235710,
       action: '',
-      id: 'asdsadksad',
+      id: '12345-01',
     }, {
       title: 'Twitter',
       content: 'You can follow us on Twitter to receive exclusive tips and updates about Material-UI and the React ecosystem.',
-      date: new Date(1588952235710).toLocaleDateString('EN', { year: 'numeric', month: 'long', day: 'numeric' }),
+      date: 1588952235710,
       action: '/about',
-      id: 'asdsdasd',
+      id: '12345-02',
     },
-  ];
+  ]);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-      setProfileMenu(['All mail', 'Trash', 'Spam']);
-      setMainMenu(['Inbox', 'Starred', 'Send email', 'Drafts']);
+      if (false) {
+        setProfileMenu([
+          {
+            menuName: 'Your Profile',
+            menuIcon: '',
+          }, {
+            menuName: 'Logout',
+            menuIcon: '',
+          },
+        ]);
+      } else {
+        setProfileMenu([
+          {
+            menuName: 'Login',
+            menuIcon: '',
+          },
+        ]);
+      }
+      setMainMenu([
+        {
+          menuName: 'Inbox',
+          menuIcon: '',
+        }, {
+          menuName: 'Starred',
+          menuIcon: '',
+        }, {
+          menuName: 'Send Mail',
+          menuIcon: '',
+        }, {
+          menuName: 'Drafts',
+          menuIcon: '',
+        },
+      ]);
     }, 1000);
   }, []);
 
@@ -81,6 +112,15 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
 
   const handlePopOverClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(e.currentTarget);
+  };
+
+  const propObj: PopOverType = {
+    popOverId,
+    openPopOver,
+    anchorEl,
+    handlePopOverClose,
+    notificationList,
+    setNotificationList,
   };
 
   return (
@@ -108,7 +148,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-describedby={popOverId} onClick={handlePopOverClick} aria-label="show new notifications" color="inherit">
-              <Badge badgeContent={noNotification} color="secondary">
+              <Badge badgeContent={notificationList.length} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -133,18 +173,18 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
         <Divider />
         <List>
           {mainMenu.map((text, index) => (
-            <ListItem button key={text}>
+            <ListItem button key={text.menuName}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.menuName} />
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
           {profileMenu.map((text, index) => (
-            <ListItem button key={text}>
+            <ListItem button key={text.menuName}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.menuName} />
             </ListItem>
           ))}
         </List>
@@ -157,29 +197,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
         <div className={classes.drawerHeader} />
         {children}
       </main>
-      <Popover
-        id={popOverId}
-        open={openPopOver}
-        anchorEl={anchorEl}
-        onClose={handlePopOverClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        {notificationList.map((notification, i): JSX.Element => (
-          <Card key={notification.id}>
-            {i !== 0 ? <Divider /> : null}
-            <Typography variant="subtitle1" className={classes.notificationHeading}>{notification.title}</Typography>
-            <Typography variant="subtitle2" className={classes.notificationContent}>{notification.content}</Typography>
-            <Typography variant="caption" className={classes.notificationDate}>{notification.date}</Typography>
-          </Card>
-        ))}
-      </Popover>
+      <PopOver propObj={propObj} />
     </div>
   );
 };
