@@ -23,5 +23,6 @@ export type PopOverType = {
 
 export type MenuType = {
   menuName: string;
-  menuIcon: string;
+  menuIcon: JSX.Element | string;
+  menuUrl: string;
 };

@@ -42,7 +42,7 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
     return `${Math.floor(timeDiff / (3600 * 24 * 30 * 12))} Years Ago`;
   };
 
-  const clearNotification = (id: string): null => {
+  const clearNotification = (id: string, type: string): null => {
     const newList = [...notificationList];
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < newList.length; i++) {
@@ -50,7 +50,9 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
       if (notification.id === id) {
         newList.splice(i, 1);
         setNotificationList(newList);
-        handlePopOverClose();
+        if (type === 'Click') {
+          handlePopOverClose();
+        }
         return null;
       }
     }
@@ -77,7 +79,7 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
           (notification, i): JSX.Element => (
             <Card key={notification.id}>
               <CardActionArea
-                onClick={(): null => clearNotification(notification.id)}
+                onClick={(): null => clearNotification(notification.id, 'Click')}
                 to={notification.action}
                 component={Link}
               >
@@ -103,7 +105,7 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
               </CardActionArea>
               <CardActions>
                 <Button
-                  onClick={(): null => clearNotification(notification.id)}
+                  onClick={(): null => clearNotification(notification.id, 'Clear')}
                   size="small"
                   color="primary"
                 >
