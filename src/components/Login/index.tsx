@@ -13,6 +13,8 @@ import Link from '@material-ui/core/Link';
 import { Link as routerLink } from 'react-router-dom';
 
 import useStyles from './styles';
+import { Login as LoginType, Response } from '../../Types/formSubmit';
+import { postMethod } from '../../Fetch';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -38,9 +40,14 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
-    console.log(rememberMe);
+    const formData: LoginType = {
+      email,
+      password,
+      rememberMe,
+    };
+    postMethod<LoginType, Response>('/api/login', formData).then((data) => {
+      console.log(data);
+    });
   };
 
   return (
@@ -63,6 +70,7 @@ const Login: React.FC = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            type="email"
             value={email}
             onChange={handleChange}
             autoFocus

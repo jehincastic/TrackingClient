@@ -13,6 +13,8 @@ import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
 
 import useStyles from './styles';
+import { Signup, Response } from '../../Types/formSubmit';
+import { postMethod } from '../../Fetch';
 
 const SignUp: React.FC = () => {
   const classes = useStyles();
@@ -46,11 +48,16 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(password);
-    console.log(getEmails);
+    const formData: Signup = {
+      firstName,
+      lastName,
+      email,
+      password,
+      getEmails,
+    };
+    postMethod<Signup, Response>('/api/register', formData).then((data) => {
+      console.log(data);
+    });
   };
 
   return (
@@ -100,6 +107,7 @@ const SignUp: React.FC = () => {
                 id="email"
                 label="Email Address"
                 name="email"
+                type="email"
                 value={email}
                 onChange={handleChange}
                 autoComplete="email"

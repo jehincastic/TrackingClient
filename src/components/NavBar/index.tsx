@@ -23,6 +23,9 @@ import Badge from '@material-ui/core/Badge';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ChatIcon from '@material-ui/icons/Chat';
 
 import useStyles from './styles';
 import {
@@ -30,8 +33,10 @@ import {
   PopOverType,
   PopOverList,
   MenuType,
+  ResponseType,
 } from '../../Types';
 import PopOver from '../PopOver';
+import { getMethod } from '../../Fetch';
 
 const NavBar: React.FC = (props: React.Props<PropType>) => {
   const [profileMenu, setProfileMenu] = useState<MenuType[]>([]);
@@ -47,19 +52,27 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
   const [notificationList, setNotificationList] = React.useState<PopOverList[]>([]);
 
   useEffect(() => {
-    setTimeout(() => {
+    const fetchData = async (url: string): Promise<ResponseType> => {
+      const data: ResponseType = await getMethod<ResponseType>(url);
+      return Promise.resolve(data);
+    };
+    fetchData('https://pokeapi.co/api/v2/pokemon/ditto/').then((data) => {
+      console.log(data);
       setLoading(false);
       if (false) {
         setProfileMenu([
           {
             menuName: 'Your Profile',
-            menuIcon: '',
-            menuUrl: '/',
-          },
-          {
+            menuIcon: <AccountCircleIcon />,
+            menuUrl: '/profile',
+          }, {
+            menuName: 'Messages',
+            menuIcon: <ChatIcon />,
+            menuUrl: '/messages',
+          }, {
             menuName: 'Logout',
-            menuIcon: '',
-            menuUrl: '/',
+            menuIcon: <ExitToAppIcon />,
+            menuUrl: '/logout',
           },
         ]);
       } else {
@@ -78,22 +91,22 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
       setMainMenu([
         {
           menuName: 'Inbox',
-          menuIcon: '',
+          menuIcon: <InboxIcon />,
           menuUrl: '/',
         },
         {
           menuName: 'Starred',
-          menuIcon: '',
+          menuIcon: <MailIcon />,
           menuUrl: '/',
         },
         {
           menuName: 'Send Mail',
-          menuIcon: '',
+          menuIcon: <InboxIcon />,
           menuUrl: '/',
         },
         {
           menuName: 'Drafts',
-          menuIcon: '',
+          menuIcon: <MailIcon />,
           menuUrl: '/',
         },
       ]);
@@ -115,7 +128,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
           id: '12345-02',
         },
       ]);
-    }, 1000);
+    });
   }, []);
 
   const handleDrawerOpen = (): void => {
@@ -207,7 +220,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
         </div>
         <Divider />
         <List>
-          {mainMenu.map((text, index) => (
+          {mainMenu.map((text) => (
             <ListItem
               to={text.menuUrl}
               onClick={handleDrawerClose}
@@ -216,7 +229,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
               key={text.menuName}
             >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {text.menuIcon}
               </ListItemIcon>
               <ListItemText primary={text.menuName} />
             </ListItem>
