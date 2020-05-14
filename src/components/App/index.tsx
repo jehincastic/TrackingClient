@@ -1,15 +1,14 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { MuiThemeProvider } from '@material-ui/core';
 
 import Home from '../Home';
 import NavBar from '../NavBar';
-import theme from '../../Theme/Theme';
 import Login from '../Login';
 import SignUp from '../SignUp';
+import { ThemeProvider } from '../../Context/ThemeContext';
 
 const App: React.FC = () => (
-  <MuiThemeProvider theme={theme}>
+  <ThemeProvider>
     <NavBar>
       <Switch>
         <Route exact path="/" component={Home} />
@@ -19,7 +18,7 @@ const App: React.FC = () => (
         <Redirect to="/" />
       </Switch>
     </NavBar>
-  </MuiThemeProvider>
+  </ThemeProvider>
 );
 
 export default App;
