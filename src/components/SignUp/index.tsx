@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,9 +15,11 @@ import { Link as RouterLink } from 'react-router-dom';
 import useStyles from './styles';
 import { Signup, Response } from '../../Types/formSubmit';
 import { postMethod } from '../../Fetch';
+import { UserContext } from '../../Context/UserContext';
 
 const SignUp: React.FC = () => {
   const classes = useStyles();
+  const { userState, setUserState } = useContext(UserContext);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');

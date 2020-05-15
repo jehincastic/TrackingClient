@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,8 +15,10 @@ import { Link as routerLink } from 'react-router-dom';
 import useStyles from './styles';
 import { Login as LoginType, Response } from '../../Types/formSubmit';
 import { postMethod } from '../../Fetch';
+import { UserContext } from '../../Context/UserContext';
 
 const Login: React.FC = () => {
+  const { userState, setUserState } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);

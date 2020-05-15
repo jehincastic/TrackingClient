@@ -17,8 +17,8 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
     openPopOver,
     anchorEl,
     handlePopOverClose,
-    notificationList,
-    setNotificationList,
+    userState,
+    setUserState,
   } = propObj;
   const classes = useStyles();
 
@@ -43,13 +43,13 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
   };
 
   const clearNotification = (id: string, type: string): null => {
-    const newList = [...notificationList];
+    const newUserState = { ...userState };
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < newList.length; i++) {
-      const notification: PopOverList = newList[i];
+    for (let i = 0; i < newUserState.notifications.length; i++) {
+      const notification: PopOverList = newUserState.notifications[i];
       if (notification.id === id) {
-        newList.splice(i, 1);
-        setNotificationList(newList);
+        newUserState.notifications.splice(i, 1);
+        setUserState(newUserState);
         if (type === 'Click') {
           handlePopOverClose();
         }
@@ -74,8 +74,8 @@ const PopOver = ({ propObj }: { propObj: PopOverType }): JSX.Element => {
         horizontal: 'left',
       }}
     >
-      {notificationList.length > 0 ? (
-        notificationList.map(
+      {userState.notifications.length > 0 ? (
+        userState.notifications.map(
           (notification, i): JSX.Element => (
             <Card key={notification.id}>
               <CardActionArea

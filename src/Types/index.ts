@@ -12,13 +12,21 @@ export type PopOverList = {
   id: string;
 };
 
+export type UserState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  isLoggedIn: boolean;
+  notifications: PopOverList[];
+};
+
 export type PopOverType = {
   popOverId: string;
   openPopOver: boolean;
   anchorEl: HTMLButtonElement | null;
   handlePopOverClose: () => void;
-  notificationList: PopOverList[];
-  setNotificationList: React.Dispatch<React.SetStateAction<PopOverList[]>>;
+  userState: UserState;
+  setUserState: React.Dispatch<React.SetStateAction<UserState>>;
 };
 
 export type MenuType = {

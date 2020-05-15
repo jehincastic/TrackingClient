@@ -34,7 +34,6 @@ import useStyles from './styles';
 import {
   PropType,
   PopOverType,
-  PopOverList,
   MenuType,
   ResponseType,
 } from '../../Types';
@@ -43,8 +42,10 @@ import { getMethod } from '../../Fetch';
 import { ThemeContext } from '../../Context/ThemeContext';
 import lightTheme from '../../Theme/LightTeme';
 import darkTheme from '../../Theme/DarkTheme';
+import { UserContext } from '../../Context/UserContext';
 
 const NavBar: React.FC = (props: React.Props<PropType>) => {
+  const { userState, setUserState } = useContext(UserContext);
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const [profileMenu, setProfileMenu] = useState<MenuType[]>([]);
   const [mainMenu, setMainMenu] = useState<MenuType[]>([]);
@@ -56,7 +57,6 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const openPopOver = Boolean(anchorEl);
   const popOverId = openPopOver ? 'simple-popover' : '';
-  const [notificationList, setNotificationList] = React.useState<PopOverList[]>([]);
 
   useEffect(() => {
     const fetchData = async (url: string): Promise<ResponseType> => {
@@ -66,7 +66,31 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
     fetchData('https://pokeapi.co/api/v2/pokemon/ditto/').then((data) => {
       console.log(data);
       setLoading(false);
-      if (false) {
+      if (userState.isLoggedIn) {
+        setUserState({
+          firstName: 'AAA',
+          lastName: 'BBB',
+          email: 'asdasda',
+          isLoggedIn: true,
+          notifications: [
+            {
+              title: 'Sketch',
+              content:
+              'Introducing Material-UI for Sketch. Today, we’re excited to introduce the Sketch symbols 💎 for Material-UI.',
+              date: 1589053235710,
+              action: '',
+              id: '12345-01',
+            },
+            {
+              title: 'Twitter',
+              content:
+              'You can follow us on Twitter to receive exclusive tips and updates about Material-UI and the React ecosystem.',
+              date: 1588952235710,
+              action: '/about',
+              id: '12345-02',
+            },
+          ],
+        });
         setProfileMenu([
           {
             menuName: 'Your Profile',
@@ -120,26 +144,8 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
           menuUrl: '/',
         },
       ]);
-      setNotificationList([
-        {
-          title: 'Sketch',
-          content:
-          'Introducing Material-UI for Sketch. Today, we’re excited to introduce the Sketch symbols 💎 for Material-UI.',
-          date: 1589053235710,
-          action: '',
-          id: '12345-01',
-        },
-        {
-          title: 'Twitter',
-          content:
-          'You can follow us on Twitter to receive exclusive tips and updates about Material-UI and the React ecosystem.',
-          date: 1588952235710,
-          action: '/about',
-          id: '12345-02',
-        },
-      ]);
     });
-  }, []);
+  }, [setUserState, userState.isLoggedIn]);
 
   const handleDrawerOpen = (): void => {
     if (!loading) {
@@ -170,8 +176,8 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
     openPopOver,
     anchorEl,
     handlePopOverClose,
-    notificationList,
-    setNotificationList,
+    userState,
+    setUserState,
   };
 
   return (
@@ -213,9 +219,14 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
                 aria-label="show new notifications"
                 color="inherit"
               >
-                <Badge badgeContent={notificationList.length} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
+                {
+                  userState.isLoggedIn
+                    ? (
+                      <Badge badgeContent={userState.notifications.length} color="secondary">
+                        <NotificationsIcon />
+                      </Badge>
+                    ) : null
+                }
               </IconButton>
             </div>
           </Toolbar>
