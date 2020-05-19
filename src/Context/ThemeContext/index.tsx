@@ -6,7 +6,7 @@ export const ThemeContext = createContext<any>(null);
 
 export const ThemeProvider: React.FC = (props: React.Props<PropType>) => {
   const { children } = props;
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
   const valueObj = {
     darkMode,
     setDarkMode,

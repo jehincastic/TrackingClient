@@ -1,8 +1,15 @@
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 
 export default makeStyles((theme: Theme) => createStyles({
+  loader: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
   root: {
     display: 'flex',
   },

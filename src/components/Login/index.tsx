@@ -16,9 +16,11 @@ import useStyles from './styles';
 import { Login as LoginType, Response } from '../../Types/formSubmit';
 import { postMethod } from '../../Fetch';
 import { UserContext } from '../../Context/UserContext';
+import { LoadingContext } from '../../Context/LoadingContext';
 
 const Login: React.FC = () => {
   const { userState, setUserState } = useContext(UserContext);
+  const { loading, setLoading } = useContext(LoadingContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -42,6 +44,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
+    setLoading(true);
     const formData: LoginType = {
       email,
       password,
@@ -95,6 +98,7 @@ const Login: React.FC = () => {
             label="Remember me"
           />
           <Button
+            disabled={loading}
             type="submit"
             fullWidth
             variant="contained"

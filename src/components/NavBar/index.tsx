@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -28,7 +28,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ChatIcon from '@material-ui/icons/Chat';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
-import { MuiThemeProvider } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import useStyles from './styles';
 import {
@@ -43,6 +43,7 @@ import { ThemeContext } from '../../Context/ThemeContext';
 import lightTheme from '../../Theme/LightTeme';
 import darkTheme from '../../Theme/DarkTheme';
 import { UserContext } from '../../Context/UserContext';
+import { LoadingContext } from '../../Context/LoadingContext';
 
 const NavBar: React.FC = (props: React.Props<PropType>) => {
   const { userState, setUserState } = useContext(UserContext);
@@ -53,7 +54,7 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
   const theme = useTheme();
   const { children } = props;
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { loading, setLoading } = useContext(LoadingContext);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const openPopOver = Boolean(anchorEl);
   const popOverId = openPopOver ? 'simple-popover' : '';
@@ -65,7 +66,6 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
     };
     fetchData('https://pokeapi.co/api/v2/pokemon/ditto/').then((data) => {
       console.log(data);
-      setLoading(false);
       if (userState.isLoggedIn) {
         setUserState({
           firstName: 'AAA',
@@ -144,8 +144,9 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
           menuUrl: '/',
         },
       ]);
+      setLoading(false);
     });
-  }, [setUserState, userState.isLoggedIn]);
+  }, [setLoading, setUserState, userState.isLoggedIn]);
 
   const handleDrawerOpen = (): void => {
     if (!loading) {
@@ -182,6 +183,11 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
 
   return (
     <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      {
+        loading
+          ? <LinearProgress color="secondary" className={classes.loader} />
+          : null
+      }
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
@@ -213,21 +219,26 @@ const NavBar: React.FC = (props: React.Props<PropType>) => {
               >
                 {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
               </IconButton>
-              <IconButton
-                aria-describedby={popOverId}
-                onClick={handlePopOverClick}
-                aria-label="show new notifications"
-                color="inherit"
-              >
-                {
-                  userState.isLoggedIn
-                    ? (
-                      <Badge badgeContent={userState.notifications.length} color="secondary">
-                        <NotificationsIcon />
-                      </Badge>
-                    ) : null
-                }
-              </IconButton>
+              {
+                userState.isLoggedIn
+                  ? (
+                    <>
+                      <IconButton
+                        aria-describedby={popOverId}
+                        onClick={handlePopOverClick}
+                        aria-label="show new notifications"
+                        color="inherit"
+                      >
+                        <Badge badgeContent={userState.notifications.length} color="secondary">
+                          <NotificationsIcon />
+                        </Badge>
+                      </IconButton>
+                      <Button onClick={handleDrawerClose} component={Link} to="/logout" color="inherit">Logout</Button>
+                    </>
+                  ) : (
+                    <Button onClick={handleDrawerClose} component={Link} to="/login" color="inherit">Login</Button>
+                  )
+              }
             </div>
           </Toolbar>
         </AppBar>
